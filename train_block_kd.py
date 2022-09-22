@@ -24,7 +24,7 @@ from modules.training.loss_fn import NSRLoss
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_rank', default=-1, type=int)
-    parser.add_argument('--dataset_path', default='/data/data0/v-xudongwang/imagenet', type=str, help='imagenet dataset path')
+    parser.add_argument('--dataset_path', default='imagenet_path', type=str, help='imagenet dataset path')
     parser.add_argument('--output_path', default='./train_block_kd_output/')
     parser.add_argument('--teacher_arch', default='efficientnet-b5', type=str)
     parser.add_argument('--superspace', choices=get_available_superspaces(), required=True, type=str)

@@ -25,7 +25,7 @@ from modules.latency_predictor import LatencyPredictor
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_rank', default=-1, type=int)
-    parser.add_argument('--dataset_path', default='/data/data0/v-xudongwang/imagenet', type=str, help='imagenet dataset path')
+    parser.add_argument('--dataset_path', default='imagenet_path', type=str, help='imagenet dataset path')
     parser.add_argument('--output_path', default='./results/block_kd/lut/')
     parser.add_argument('--teacher_arch', default='efficientnet-b5', type=str)
     parser.add_argument('--teacher_checkpoint_path', default='results/lsq_efficientnet_b5/checkpoint.pth', type=str)

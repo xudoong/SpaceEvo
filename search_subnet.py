@@ -35,7 +35,7 @@ signal(SIGPIPE, SIG_IGN)
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_rank', default=-1, type=int)
-    parser.add_argument('--dataset_path', default='/data/data0/v-xudongwang/imagenet', type=str, help='imagenet dataset path')
+    parser.add_argument('--dataset_path', default='imagenet_path', type=str, help='imagenet dataset path')
     parser.add_argument('--output_path', default='./results/search_subnet/')
     parser.add_argument('--valid_size', default=10000, help='size of validation dataset')
 

@@ -70,9 +70,7 @@ class ImageTarDataset(data.Dataset):
 if __name__ == '__main__':
 
     # path to the imagenet validation dataset, both options would work
-    # imagenet_valid = os.path.join(os.environ['AMLT_DATA_DIR'], 'imagenet_valid.tar')
-    imagenet_valid = '/data/data0/v-xudongwang/imagenet_tar/ILSVRC2012_img_train.tar'
-    # imagenet_valid = '/mnt/data/imagenet/imagenet_valid.tar'
+    imagenet_valid = os.path.join(os.environ['AMLT_DATA_DIR'], 'imagenet_valid.tar')
 
     # load dataset
     print('Loading dataset with various transforms')
