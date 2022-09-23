@@ -1,1 +1,0 @@
-python -m torch.distributed.launch --nproc_per_node 2 train_supernet.py --superspace mobilew --supernet_choice 112220-154400 --batch_size_per_gpu 32 --config-file supernet_training_configs/local_debug.yaml

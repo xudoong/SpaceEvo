@@ -1,1 +1,0 @@
-python search_block_kd_v2.py --lut_path /data/data0/v-xudongwang/benchmark_tools/experiments/D0323_evolve_space/results/teamdrive/block_kd/lut --superspace mobilew --latency_constraint 15 20 25 --platform tflite27_cpu_int8 --latency_loss_t 0.08
