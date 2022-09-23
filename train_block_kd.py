@@ -24,8 +24,8 @@ from modules.training.loss_fn import NSRLoss
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_rank', default=-1, type=int)
-    parser.add_argument('--dataset_path', default='imagenet_path', type=str, help='imagenet dataset path')
-    parser.add_argument('--output_path', default='./train_block_kd_output/')
+    parser.add_argument('--dataset_path', default='<path_to_imagenet>', type=str, help='imagenet dataset path')
+    parser.add_argument('--output_path', default='./checkpoints/block_kd/')
     parser.add_argument('--teacher_arch', default='efficientnet-b5', type=str)
     parser.add_argument('--superspace', choices=get_available_superspaces(), required=True, type=str)
     # training setting
@@ -43,13 +43,12 @@ def get_args():
     parser.add_argument('--num_workers', default=16, type=int)
     parser.add_argument('--grad_clip_value', default=1, help='gradient clip value')
     parser.add_argument('--resume', action='store_true', help='resume training from the last epoch')
-    parser.add_argument('--stage_list', nargs='*', help='only train stages in this list')
+    parser.add_argument('--stage_list', nargs='*', help='only train stages in this list, e.g.')
     parser.add_argument('--valid_size', default=50000, help='size of validation dataset')
     # compare training settings
     parser.add_argument('--hw_list', nargs='+', default=[224])
     parser.add_argument('--loss_fn', default='nsr', choices=['mse', 'nsr'], help='the type of loss function')
-    parser.add_argument('--fix_cio', action='store_true', help='set stage cin and cout the same as teacher. compare the impact on training loss.') # TODO: to be removed later
-    parser.add_argument('--inplace_distill_from_teacher', action='store_true', help='all students in sandwich rule learn from teacher')
+    parser.add_argument('--inplace_distill_from_teacher', action='store_true', help='students in sandwich rule learn from teacher')
     # others
     parser.add_argument('--test_only', action='store_true', help='skip training. only evaluate.')
     parser.add_argument('--num_calib_batches', default=20, help='num batches to calibrate bn params')
@@ -107,10 +106,7 @@ def main():
         if not student_superspace.need_choose_block(stage_name):
             continue
 
-        if args.fix_cio: # TODO: to be removed
-            stages = block_kd_manager.get_stages_same_cio_as_teacher(stage_name)
-        else:
-            stages = block_kd_manager.get_stages(stage_name)
+        stages = block_kd_manager.get_stages(stage_name)
 
         for model_name, model in stages:
             if args.stage_list and model_name not in args.stage_list: # skip the stages not in args.stage_list
@@ -153,7 +149,8 @@ def train_stage(stage_name: str, args, model: nn.Module, teacher: nn.Module, mod
         criterion = NSRLoss()
     else:
         raise ValueError(args.loss_fn)
-    
+
+    start_epoch = 0
     if args.resume:
         checkpoint_path = os.path.join(args.output_path, model_name, 'checkpoint.pth')
         if os.path.exists(checkpoint_path):
@@ -165,8 +162,6 @@ def train_stage(stage_name: str, args, model: nn.Module, teacher: nn.Module, mod
             dist_print(f'Load state_dict from {checkpoint_path}, start training from epoch {start_epoch}')
         else:
             dist_print(f'No checkpoint found at {checkpoint_path}, start training from epoch 0')
-    else:
-        start_epoch = 0
 
     log_path = os.path.join(args.local_output_path, model_name, 'train.log')
     remote_log_path = os.path.join(args.output_path, model_name, 'train.log')

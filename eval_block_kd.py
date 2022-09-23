@@ -28,8 +28,8 @@ def get_args():
     parser.add_argument('--dataset_path', default='imagenet_path', type=str, help='imagenet dataset path')
     parser.add_argument('--output_path', default='./results/block_kd/lut/')
     parser.add_argument('--teacher_arch', default='efficientnet-b5', type=str)
-    parser.add_argument('--teacher_checkpoint_path', default='results/lsq_efficientnet_b5/checkpoint.pth', type=str)
-    parser.add_argument('--checkpoint_path', default='./results/teamdrive/block_kd')
+    parser.add_argument('--teacher_checkpoint_path', default='checkpoints/block_kd/teacher_checkpoint/checkpoint.pth', type=str)
+    parser.add_argument('--checkpoint_path', default='./checkpoints/block_kd/lut')
     parser.add_argument('--superspace', choices=get_available_superspaces(), required=True, type=str)
     parser.add_argument('--platform', required=True, help='latency predictor platform')
     # dataset setting
@@ -40,7 +40,8 @@ def get_args():
     parser.add_argument('--num_workers', default=8, type=int)
     # stage setting
     parser.add_argument('--stage_list', nargs='*', help='only train stages in this list')
-    parser.add_argument('--width_window_filter', nargs='*')
+    parser.add_argument('--width_window_filter', nargs='*',
+                        help='If set, only evaluate stages with width window choice in this list.')
     parser.add_argument('--num_samples_per_stage', default=1000, type=int)
     # compare training settings
     parser.add_argument('--hw_list', nargs='+', default=[224])
@@ -50,7 +51,7 @@ def get_args():
     parser.add_argument('--manual_seed', default=0, type=int)
     parser.add_argument('--debug', action='store_true', help='debug mode, only train and eval a small number of batches')
     parser.add_argument('--debug_batches', default=10, type=int)
-    parser.add_argument('--fp32_mode', action='store_true') # TODO: fp32 mode, for debug
+    parser.add_argument('--fp32_mode', action='store_true')  # fp32 mode, for debug
     args = parser.parse_args()
 
     args.checkpoint_path = os.path.join(args.checkpoint_path, args.superspace)

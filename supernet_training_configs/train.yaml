@@ -4,7 +4,7 @@
 # arch: 'mobile-322223' # specfiy in argparser
 # exp_name: "mobile-322223" # specfiy in argparser
 
-batch_size_per_gpu: 128
+batch_size_per_gpu: 64
 sandwich_rule: True
 
 alpha_min: -1.0
@@ -15,8 +15,8 @@ grad_clip_value: 1.0
 
 augment: "auto_augment_tf"
 
-warmup_epochs: 5 #TODO
-epochs: 360 #TODO
+warmup_epochs: 5
+epochs: 360
 start_epoch: 0
 
 label_smoothing: 0.1
@@ -32,7 +32,7 @@ post_bn_calibration_batch_num: 20
 
 num_arch_training: 4
 
-models_save_dir: "/mnt/data/EdgeDL/quantized_nas/supernet_training" # TODO
+models_save_dir: "checkpoints/supernet_training"
 
 #### cloud training resources  ####
 data_loader_workers_per_gpu: 8
@@ -64,8 +64,8 @@ distributed: True
 
 ### imagenet dataset ###
 dataset: 'imagenet'
-dataset_dir: "./dataset" # TODO
-valid_size: 0 # TODO
+dataset_dir: "<path_to_imagenet>"
+valid_size: 0
 valid_freq: 5
 n_classes: 1000
 drop_last: True

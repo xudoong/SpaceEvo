@@ -3,7 +3,7 @@ import collections
 import os
 from typing import List, Tuple, Union
 
-from modules.block_kd.search_v2.searcher import BlockKDSearcher
+from modules.block_kd.search.searcher import BlockKDSearcher
 from modules.search_space.superspace import get_available_superspaces
 
 import matplotlib.pyplot as plt
@@ -204,11 +204,13 @@ def eval_spec_candidates(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--lut_path', default=os.path.join(FILE_DIR, 'data/block_lut'), type=str, help='trained block lut path')
-    parser.add_argument('--output_dir', default=os.path.join(FILE_DIR, 'results/block_kd/search'))
+    parser.add_argument('--lut_path', default=os.path.join(FILE_DIR, 'data/block_lut'), type=str, help='block_kd lut path')
+    parser.add_argument('--output_dir', default=os.path.join(FILE_DIR, 'checkpoints/block_kd/search'))
     parser.add_argument('--superspace', required=True, choices=get_available_superspaces())
     parser.add_argument('--platform', type=str, required=True)
-    parser.add_argument('--supernet_choices', nargs='*', help='search spaces (supernets) to calculate score, if set, only eval these instead of search')
+    parser.add_argument('--supernet_choices', nargs='*',
+                        help='The search spaces (supernets) to calculate score.'
+                             'If set, only do evaluation instead of search')
     parser.add_argument('--latency_constraint', nargs='+')
     parser.add_argument('--latency_loss_t', default=0.1, type=float)
     parser.add_argument('--latency_loss_a', default=0.01, type=float)

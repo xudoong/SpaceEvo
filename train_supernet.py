@@ -74,7 +74,7 @@ def build_args_and_env(run_args):
     args.exp_name = args.arch
     args.local_rank = run_args.local_rank
 
-    #load config
+    # load config
     assert args.distributed and args.multiprocessing_distributed, 'only support DDP training'
     args.distributed = True
 
@@ -83,7 +83,7 @@ def build_args_and_env(run_args):
     if comm.is_master_process():
         os.makedirs(args.models_save_dir, exist_ok=True)
 
-        #backup config file
+        # backup config file
         saver.copy_file(args.config_file, '{}/{}'.format(args.models_save_dir, os.path.basename(args.config_file)))
 
     args.checkpoint_save_path = os.path.join(
@@ -124,8 +124,8 @@ def main():
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    #cudnn.deterministic = True
-    #warnings.warn('You have chosen to seed training. '
+    # cudnn.deterministic = True
+    # warnings.warn('You have chosen to seed training. '
     #                'This will turn on the CUDNN deterministic setting, '
     #                'which can slow down your training considerably! '
     #                'You may see unexpected behavior when restarting '
@@ -141,7 +141,7 @@ def main_worker(args):
     args.gpu = args.local_rank  # local rank, local machine cuda id
     args.batch_size = args.batch_size_per_gpu
     args.batch_size_total = args.batch_size * args.world_size
-    #rescale base lr
+    # rescale base lr
     args.lr_scheduler.base_lr = args.lr_scheduler.base_lr * (max(1, args.batch_size_total // 256))
 
     # set random seed, make sure all random subgraph generated would be the same
@@ -181,7 +181,7 @@ def main_worker(args):
         model.apply(
                 lambda m: setattr(m, 'need_sync', True))
 
-    model = comm.get_parallel_model(model, args.gpu) #local rank
+    model = comm.get_parallel_model(model, args.gpu) # local rank
 
     if comm.is_master_process():
         logger.info(model)
@@ -336,7 +336,7 @@ def train_epoch(
         with torch.no_grad():
             soft_logits = output.clone().detach()
 
-        #step 2. sample the smallest network and several random networks
+        # step 2. sample the smallest network and several random networks
         sandwich_rule = getattr(args, 'sandwich_rule', True)
         model.module.set_dropout_rate(0)  #reset dropout rate
         for arch_id in range(1, num_subnet_training):
@@ -414,7 +414,7 @@ def validate(
     model, 
     criterion, 
     args, 
-    distributed = True,
+    distributed=True,
 ):
     return supernet_eval.validate(
         train_loader,
@@ -423,9 +423,8 @@ def validate(
         criterion,
         args,
         logger,
-        bn_calibration = True,
+        bn_calibration=True,
     )
-
 
 
 if __name__ == '__main__':

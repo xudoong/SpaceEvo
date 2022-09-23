@@ -42,7 +42,7 @@ def validate_one_subnet(
     end = time.time()
 
     subnet.cuda(args.gpu)
-    subnet.eval() # freeze again all running stats
+    subnet.eval()  # freeze again all running stats
    
     for batch_idx, (images, target) in enumerate(val_loader):
         images = images.cuda(args.gpu, non_blocking=True)
@@ -53,7 +53,7 @@ def validate_one_subnet(
             output = subnet(images)
             loss = criterion(output, target).item()
 
-        # measure accuracy 
+        # measure accuracy
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
         
         batch_size = images.size(0)

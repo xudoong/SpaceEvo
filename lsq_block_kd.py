@@ -49,7 +49,6 @@ def get_args():
     # compare training settings
     parser.add_argument('--hw_list', nargs='+', default=[224])
     parser.add_argument('--loss_fn', default='nsr', choices=['mse', 'nsr'], help='the type of loss function')
-    parser.add_argument('--fix_cio', action='store_true', help='set stage cin and cout the same as teacher. compare the impact on training loss.') # TODO: to be removed later
     parser.add_argument('--inplace_distill_from_teacher', action='store_true', help='all students in sandwich rule learn from teacher')
     # others
     parser.add_argument('--test_only', action='store_true', help='skip training. only evaluate.')
@@ -115,10 +114,7 @@ def main():
         if not student_superspace.need_choose_block(stage_name):
             continue
 
-        if args.fix_cio: # TODO: to be removed
-            stages = block_kd_manager.get_stages_same_cio_as_teacher(stage_name)
-        else:
-            stages = block_kd_manager.get_stages(stage_name)
+        stages = block_kd_manager.get_stages(stage_name)
 
         for model_name, model in stages:
             if args.stage_list and model_name not in args.stage_list: # skip the stages not in args.stage_list

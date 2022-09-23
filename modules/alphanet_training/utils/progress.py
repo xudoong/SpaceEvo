@@ -49,7 +49,6 @@ class ProgressMeter(object):
         return '[' + fmt + '/' + fmt.format(num_batches) + ']'
 
 
-
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
     with torch.no_grad():
@@ -62,7 +61,7 @@ def accuracy(output, target, topk=(1,)):
 
         res = []
         for k in topk:
-            correct_k = correct[:k].reshape(-1).float().sum() #sum(0, keepdim=True)
+            correct_k = correct[:k].reshape(-1).float().sum()
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 

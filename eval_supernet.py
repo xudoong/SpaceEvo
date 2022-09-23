@@ -1,5 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# based on AlphaNet
+# based on AlphaNet: https://github.com/facebookresearch/AlphaNet
 
 import argparse
 import os
@@ -30,20 +29,21 @@ from modules.latency_predictor import LatencyPredictor
 
 from copy import deepcopy
 import numpy as np
-import joblib 
+import joblib
 
 # from sklearn.ensemble import RandomForestRegressor
 
 
-parser = argparse.ArgumentParser(description='Supernet sandwich rule training.')
+parser = argparse.ArgumentParser(description='Evaluate supernet and subnet.')
 parser.add_argument('--superspace', choices=get_available_superspaces(), required=True, type=str)
-parser.add_argument('--supernet_choice', type=str, nargs='+', help='candidate of superspace, e.g. 322223', default='322223')
+parser.add_argument('--supernet_choice', type=str, required=True, nargs='+',
+                    help='candidate of superspace, e.g. 322223-011120, or specific supernet, e.g. spaceevo@pixel4')
 parser.add_argument('--align_sample', action='store_true', help='all blocks in a stage share the same kwe values')
-parser.add_argument('--mode', default='acc', choices=['acc', 'lat'])
-parser.add_argument('--quant_mode', action='store_true',)
+parser.add_argument('--mode', default='acc', choices=['acc', 'lat'], help='evaluate accuracy or latency')
+parser.add_argument('--quant_mode', action='store_true', help='evalute quantized net')
 parser.add_argument('--local_rank', default=-1, type=int)
 parser.add_argument('--batch_size_per_gpu', type=int, default=32)
-parser.add_argument('--resume', default='./results/teamdrive/supernet_training')
+parser.add_argument('--resume', default='result/supernet_training')
 parser.add_argument('--seed', default=0)
 parser.add_argument('--dataset_dir', default='imagenet_path')
 parser.add_argument('--data_loader_workers_per_gpu', default=4, type=int)
@@ -56,7 +56,6 @@ parser.add_argument('--print_freq', default=10, type=int)
 parser.add_argument('--subnet_choice', default=None, type=str, nargs='*')
 args = parser.parse_args()
 
-
 logger = logging.get_logger(__name__)
 logging.setup_logging(None)
 
@@ -64,20 +63,19 @@ args.distributed = args.local_rank != -1
 if args.local_rank == -1:
     args.local_rank = 0
 
+# get checkpoint path
 if args.mode == 'acc':
     args.supernet_choice = args.supernet_choice[0]
     args.arch = args.superspace + '-' + args.supernet_choice + f'-align{int(args.align_sample)}'
     args.exp_name = args.arch
     args.resume = os.path.join(args.resume, args.exp_name, 'checkpoint.pth' if not args.quant_mode else 'lsq.pth') 
 
-
 def main():
-
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    #cudnn.deterministic = True
-    #warnings.warn('You have chosen to seed training. '
+    # cudnn.deterministic = True
+    # warnings.warn('You have chosen to seed training. '
     #                'This will turn on the CUDNN deterministic setting, '
     #                'which can slow down your training considerably! '
     #                'You may see unexpected behavior when restarting '
@@ -85,7 +83,7 @@ def main():
 
     if args.distributed:
         dist.init_process_group(
-            backend='nccl', 
+            backend='nccl',
         )
         args.world_size = dist.get_world_size()
     else:
@@ -109,9 +107,8 @@ def main():
     # See: https://github.com/facebookresearch/maskrcnn-benchmark/issues/172
     comm.synchronize()
 
-    args.rank = comm.get_rank() # global rank
+    args.rank = comm.get_rank()  # global rank
     torch.cuda.set_device(args.gpu)
-
 
     if args.mode == 'acc':
         eval_acc()
@@ -131,26 +128,26 @@ def eval_acc():
     # use sync batchnorm
     if getattr(args, 'sync_bn', False):
         model.apply(
-                lambda m: setattr(m, 'need_sync', True))
+            lambda m: setattr(m, 'need_sync', True))
 
     if args.distributed:
-        model = comm.get_parallel_model(model, args.gpu) #local rank
-        model_without_ddp = model.module 
+        model = comm.get_parallel_model(model, args.gpu)  # local rank
+        model_without_ddp = model.module
     else:
         model_without_ddp = model
     criterion = nn.CrossEntropyLoss().cuda(args.gpu)
 
-    ## load dataset, train_sampler: distributed
+    # load dataset, train_sampler: distributed
     logger.info(f'Start loading data {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
-    train_loader, val_loader, test_loader, train_sampler =  build_data_loader(args)
+    train_loader, val_loader, test_loader, train_sampler = build_data_loader(args)
     if val_loader is None:
         val_loader = test_loader
-        logger.info(f'Valid loader is None. Use test loader to do evalution. len {len(val_loader)}')
+        logger.info(f'Valid loader is None. Use test loader to do evaluation. len {len(val_loader)}')
     else:
         logger.info(f'len train loader and val loader: {len(train_loader)} {len(val_loader)}')
     logger.info(f'Finish loading data {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
 
-    # optionally resume from a checkpoint
+    # load checkpoints
     saver.load_checkpoints(args, model, logger=logger)
 
     if not args.subnet_choice:
@@ -170,31 +167,34 @@ def eval_acc():
 
         if comm.is_master_process():
             with open('./tmp_eval.csv', 'a') as f:
-                f.write(f'{args.arch},{args.start_epoch},{max_net_acc1:.2f},{min_net_acc1:.2f},{max_latency:.2f},{min_latency:.2f}\n')
+                f.write(
+                    f'{args.arch},{args.start_epoch},{max_net_acc1:.2f},{min_net_acc1:.2f},{max_latency:.2f},{min_latency:.2f}\n')
     else:
         for subnet_choice in args.subnet_choice:
-            acc1, acc5, loss, flops, params = supernet_eval.validate_spec_subnet(train_loader, val_loader, model, criterion, args, logger, subnet_choice)
+            acc1, acc5, loss, flops, params = supernet_eval.validate_spec_subnet(train_loader, val_loader, model,
+                                                                                 criterion, args, logger, subnet_choice)
             if comm.is_master_process():
                 with open('./tmp_eval_specnet.csv', 'a') as f:
-                    f.write(f'{args.superspace}-{args.supernet_choice}-{subnet_choice},{acc1:.2f},{flops:.2f},{params:.2f}\n')
+                    f.write(
+                        f'{args.superspace}-{args.supernet_choice}-{subnet_choice},{acc1:.2f},{flops:.2f},{params:.2f}\n')
 
 
 def validate(
-    train_loader, 
-    val_loader, 
-    model, 
-    criterion, 
-    args, 
-    distributed = True,
+        train_loader,
+        val_loader,
+        model,
+        criterion,
+        args,
+        distributed=True,
 ):
     return supernet_eval.validate(
         train_loader,
-        val_loader, 
-        model, 
+        val_loader,
+        model,
         criterion,
         args,
         logger,
-        bn_calibration = True,
+        bn_calibration=True,
         eval_random_net=False
     )
 
@@ -218,7 +218,7 @@ def eval_lat():
         output_path = f'results/eval_supernet/{args.superspace}-latency_cdf.png'
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         draw_latency_cdf(latency_dict, output_path)
-    
+
     else:
         supernet = Supernet.build_from_str(f'{args.superspace}-{args.supernet_choice[0]}')
         supernet.align_sample = args.align_sample
@@ -227,7 +227,7 @@ def eval_lat():
             supernet.set_active_subnet(subnet_choice)
             lat = latency_predictor.predict_subnet(supernet.get_active_subnet_config(), verbose=True)
             print(f'{subnet_choice} {lat:.2f}ms')
-    
+
 
 def draw_latency_cdf(latency_dict: Dict[str, List], output_path):
     for supernet_choice_str, latency_list in latency_dict.items():
@@ -243,5 +243,3 @@ def draw_latency_cdf(latency_dict: Dict[str, List], output_path):
 
 if __name__ == '__main__':
     main()
-
-

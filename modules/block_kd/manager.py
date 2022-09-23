@@ -80,21 +80,6 @@ class BlockKDManager:
             rv.append((f'{stage_name}_{i}', student_stage))
         return rv
 
-    def get_stages_same_cio_as_teacher(self, stage_name: str) -> List[Tuple[str, Stage]]: # for comparison, remove later
-        stage_idx = self.stage_name_to_idx(stage_name)
-        # teacher
-        teacher_cin = self.teacher.get_cin(stage_name)
-        teacher_cout = self.teacher.get_cout(stage_name)
-        # student
-        building_blocks = self.get_building_blocks(stage_name)
-        
-        rv = []
-        for i, building_block in enumerate(building_blocks):
-            stage_config = self.stage_configs[stage_idx]
-            stage = Stage(teacher_cin, width_list=[teacher_cout], depth_list=stage_config.depth_list, stride=stage_config.stride, building_block=building_block)
-            rv.append((f'{stage_name}_{i}', stage))
-        return rv
-
     # ========== helper functions ==========
 
     def get_building_blocks(self, stage_name: str):

@@ -13,8 +13,7 @@ import time
 from typing import List, Union
 
 import numpy as np
-from pytz import timezone
-import torch 
+import torch
 import torch.distributed as dist
 from tqdm import tqdm
 
@@ -61,7 +60,7 @@ def get_args():
     parser.add_argument('--debug_batches', default=10)
     parser.add_argument('--verbose', action='store_true')
     parser.set_defaults(verbose=True)
-    parser.add_argument('--use_testset', action='store_true') # TODO TO BE REMOVED
+    parser.add_argument('--use_testset', action='store_true')  # For upper-bound reference.
     parser.add_argument('--max_crossover_try', default=50, type=int, help='try crossover for max this times to avoid deadlock.')
     parser.add_argument('--test_top_num', default=10)
     args = parser.parse_args()
