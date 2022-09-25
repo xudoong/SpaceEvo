@@ -40,7 +40,7 @@ parser.add_argument('--supernet_choice', type=str, required=True, nargs='+',
                     help='candidate of superspace, e.g. 322223-011120, or specific supernet, e.g. spaceevo@pixel4')
 parser.add_argument('--align_sample', action='store_true', help='all blocks in a stage share the same kwe values')
 parser.add_argument('--mode', default='acc', choices=['acc', 'lat'], help='evaluate accuracy or latency')
-parser.add_argument('--quant_mode', action='store_true', help='evalute quantized net')
+parser.add_argument('--quant_mode', action='store_true', help='evaluate quantized net')
 parser.add_argument('--local_rank', default=-1, type=int)
 parser.add_argument('--batch_size_per_gpu', type=int, default=32)
 parser.add_argument('--resume', default='result/supernet_training')

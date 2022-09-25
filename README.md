@@ -1,5 +1,7 @@
 # SpaceEvo
-This is the code for our paper SpaceEvo.
+This is the code for our paper SpaceEvo. We propose an algorithm to search for INT8-quantization-friendly search spaces 
+based on block-wise knowledge distillation. Then we use NAS algorithms to train and quantize the supernet and 
+search for efficient 8-bit subnets for deployment on different platforms.
 
 ## Checkpoints
 Our trained supernets' checkpoints are available in
@@ -223,10 +225,10 @@ The valid latency range is specified by `--latency_constraint c` and `--latency_
 ### evaluate subnet
 A subnet can be encoded as the depth, width, kernel_size, expand_ratio and resolution choices from the supernet, e.g.,  d1#1#2#4#5#4#6#2_k3#3#5#5#3#5#5#3#5#3#3#3#5#3#3#5#5#5#5#3#3#5#5#5#5_w32#32#32#48#48#48#64#64#96#112#96#112#80#144#144#144#128#240#256#256#256#256#256#432#432_e0#0.5#8.0#6.0#8.0#6.0#8.0#4.0#6.0#6.0#4.0#4.0#4.0#6.0#8.0#4.0#6.0#6.0#6.0#6.0#8.0#8.0#4.0#8.0#8.0_r224.
 ```
-# evalute the fp32 accuracy of a list of subnets in a supernet
+# evaluate the fp32 accuracy of a list of subnets in a supernet
 python eval_supernet.py --superspace onnxw --supernet_choice 121122-133333 --mode acc --resume ${CHECKPOINT_DIR}/supernet_training --dataset_dir ./dataset --subnet_choice <subnet_choice1> <subnet_choice2> <...> 
 
-# evalute the int8 accuracy of a list of subnets in a supernet
+# evaluate the int8 accuracy of a list of subnets in a supernet
 python eval_supernet.py --superspace onnxw --supernet_choice 121122-133333 --mode acc --resume ${CHECKPOINT_DIR}/supernet_training --dataset_dir ./dataset --subnet_choice <subnet_choice1> <subnet_choice2> <...> --quant_mode
 
 # also you can run this code with torch ddp to speed up evaluation: python -m torch.distributed.launch --nproc_per_node 4 eval_supernet.py ...

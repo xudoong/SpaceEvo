@@ -85,7 +85,7 @@ def main():
         model.load_state_dict(state_dict['model'], strict=False)
         model.to(args.device)
         model = nn.parallel.DistributedDataParallel(model, device_ids=[args.device], find_unused_parameters=False)
-        evalute(args, model, test_dataloader, state_dict['epoch'])
+        evaluate(args, model, test_dataloader, state_dict['epoch'])
     else:
         train(args, model, train_dataloader, test_dataloader, writer)
 
@@ -146,7 +146,7 @@ def train(args, model: nn.Module, train_dataloader, eval_dataloader, writer: Sum
                 lr_scheduler.step()
 
 
-        evalute(args, model, eval_dataloader, epoch, writer)
+        evaluate(args, model, eval_dataloader, epoch, writer)
         checkpoint = {
             'epoch': epoch,
             'model': model.module.state_dict(),
@@ -159,7 +159,7 @@ def train(args, model: nn.Module, train_dataloader, eval_dataloader, writer: Sum
             os.system(f'cp {checkpoint_path} {checkpoint_path.replace("checkpoint.pth", f"model_{epoch}.pth")}')
 
 
-def evalute(args, model, eval_dataloader, epoch, writer=None):
+def evaluate(args, model, eval_dataloader, epoch, writer=None):
     model.eval()
     criterion = nn.CrossEntropyLoss()
     loss_metric = DistributedAvgMetric()

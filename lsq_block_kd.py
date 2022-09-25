@@ -28,7 +28,7 @@ def get_args():
     parser.add_argument('--dataset_path', default='imagenet_path', type=str, help='imagenet dataset path')
     parser.add_argument('--output_path', default='./lsq_block_kd_output')
     parser.add_argument('--teacher_arch', default='efficientnet-b5', type=str)
-    parser.add_argument('--teacher_checkpoint_path', default='./result/lsq_efficientnetb5/checkpoint.pth')
+    parser.add_argument('--teacher_checkpoint_path', default='./checkpoints/block_kd/teacher_checkpoint/checkpoint.pth')
     parser.add_argument('--superspace', choices=get_available_superspaces(), required=True, type=str)
     # training setting
     parser.add_argument('--num_epochs', default=1, type=int)
@@ -132,7 +132,7 @@ def main():
                 model.to(args.device)
                 model = nn.parallel.DistributedDataParallel(model, device_ids=[args.device], find_unused_parameters=True)
                 criterion = nn.MSELoss() if args.loss_fn == 'mse' else NSRLoss()
-                evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, state_dict['epoch'])
+                evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, state_dict['epoch'])
             else:
                 train_stage(stage_name, args, model, teacher, model_name, train_dataloader, eval_dataloader, writer)
 
@@ -244,7 +244,7 @@ def train_stage(stage_name: str, args, model: nn.Module, teacher: nn.Module, mod
         if args.lr_scheduler == 'step': # step lr scheduler update per epoch
             lr_scheduler.step()
 
-        evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer)
+        evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer)
         checkpoint = {
             'epoch': epoch,
             'model': model.module.state_dict(),
@@ -259,7 +259,7 @@ def train_stage(stage_name: str, args, model: nn.Module, teacher: nn.Module, mod
         if args.debug: break
 
 
-def evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer=None):
+def evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer=None):
     model.eval()
     teacher.eval()
     models_to_eval = {'max': model.module.set_max_sub_stage, 'min': model.module.set_min_sub_stage, 'random': model.module.sample_active_sub_stage}

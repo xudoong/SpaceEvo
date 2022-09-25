@@ -144,7 +144,7 @@ def main():
                         kwe_list = model_without_ddp.sample_active_sub_stage(width_list=active_width_list)
                         kwe_list_str = '_'.join(['#'.join([str(v[0]), str(v[1]), str(v[2])]) for v in kwe_list])
                         # get loss
-                        loss, resolution = evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader)
+                        loss, resolution = evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader)
                         hw = block_kd_manager.get_hw(stage_name, resolution)
                         # get mflops and mparams
                         cin = model_without_ddp.in_proj.active_out_channels
@@ -162,7 +162,7 @@ def main():
             os.system(f'cp {args.local_log_path}/* {args.output_path}')
 
 
-def evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader):
+def evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader):
     model.eval()
     teacher.eval()
     loss_metric = DistributedAvgMetric()

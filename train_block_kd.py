@@ -43,7 +43,7 @@ def get_args():
     parser.add_argument('--num_workers', default=16, type=int)
     parser.add_argument('--grad_clip_value', default=1, help='gradient clip value')
     parser.add_argument('--resume', action='store_true', help='resume training from the last epoch')
-    parser.add_argument('--stage_list', nargs='*', help='only train stages in this list, e.g.')
+    parser.add_argument('--stage_list', nargs='*', help='only train stages in this list')
     parser.add_argument('--valid_size', default=50000, help='size of validation dataset')
     # compare training settings
     parser.add_argument('--hw_list', nargs='+', default=[224])
@@ -123,7 +123,7 @@ def main():
                 model.to(args.device)
                 model = nn.parallel.DistributedDataParallel(model, device_ids=[args.device], find_unused_parameters=True)
                 criterion = nn.MSELoss() if args.loss_fn == 'mse' else NSRLoss()
-                evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, state_dict['epoch'])
+                evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, state_dict['epoch'])
             else:
                 train_stage(stage_name, args, model, teacher, model_name, train_dataloader, eval_dataloader, train_sampler, writer)
 
@@ -238,7 +238,7 @@ def train_stage(stage_name: str, args, model: nn.Module, teacher: nn.Module, mod
         if args.lr_scheduler == 'step': # step lr scheduler update per epoch
             lr_scheduler.step()
 
-        evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer)
+        evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer)
         checkpoint = {
             'epoch': epoch,
             'model': model.module.state_dict(),
@@ -254,7 +254,7 @@ def train_stage(stage_name: str, args, model: nn.Module, teacher: nn.Module, mod
         if args.debug: break
 
 
-def evalute_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer=None):
+def evaluate_stage(stage_name, model_name, args, model, teacher, criterion, eval_dataloader, train_dataloader, epoch, writer=None):
     model.eval()
     teacher.eval()
     models_to_eval = {'max': model.module.set_max_sub_stage, 'min': model.module.set_min_sub_stage, 'random': model.module.sample_active_sub_stage}
