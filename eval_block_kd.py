@@ -22,6 +22,7 @@ from modules.modeling.common.flops_counter import count_net_flops_and_params
 from modules.modeling.ops.lsq_plus import set_quant_mode
 from modules.latency_predictor import LatencyPredictor
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_rank', default=-1, type=int)

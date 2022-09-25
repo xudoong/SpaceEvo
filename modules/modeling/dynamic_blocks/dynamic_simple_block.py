@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type, Union
+from typing import Dict, List
 
 from torch import Tensor, nn
 
@@ -14,7 +14,7 @@ from modules.modeling.common.utils import make_divisible, get_activation
 
 class _DynamicConvNormActBlock(BaseDynamicBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation: Union[Type[nn.Module], str] = 'relu') -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation='relu') -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, None, activation)
 
         self.conv = DynamicQConvNormActivation(
@@ -51,7 +51,7 @@ class _DynamicConvNormActBlock(BaseDynamicBlock):
 
 class DynamicFirstConvBlock(_DynamicConvNormActBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation: Union[Type[nn.Module], str] = 'relu') -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation='relu') -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, activation)
 
     def get_active_block(self, cin: int, retain_weights=True) -> FirstConvBlock:
@@ -67,7 +67,7 @@ class DynamicFirstConvBlock(_DynamicConvNormActBlock):
 
 class DynamicFinalExpandBlock(_DynamicConvNormActBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation: Union[Type[nn.Module], str] = 'relu') -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation='relu') -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, activation)
     
     def get_active_block(self, cin: int, retain_weights=True) -> FinalExpandBlock:
@@ -83,7 +83,7 @@ class DynamicFinalExpandBlock(_DynamicConvNormActBlock):
 
 class DynamicFeatureMixBlock(_DynamicConvNormActBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation: Union[Type[nn.Module], str] = 'relu') -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, activation='relu') -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, activation)
 
     def forward(self, x: Tensor) -> Tensor:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 import copy
-from typing import Iterator, List, OrderedDict, Tuple, Type, Union
+from typing import Iterator, List, OrderedDict, Tuple, Callable
 
 import numpy as np
 import torch
@@ -13,7 +13,7 @@ from modules.modeling.blocks.base_block import BaseBlockConfig
 
 class Stage(nn.Module):
 
-    def __init__(self, max_cin: int, width_list: List[int], depth_list: List[int], stride: int, building_block: Type[BaseDynamicBlock]) -> None:
+    def __init__(self, max_cin: int, width_list: List[int], depth_list: List[int], stride: int, building_block: Callable[..., BaseDynamicBlock]) -> None:
         super().__init__()
         self.max_cin = max_cin
         self.width_list = width_list
@@ -119,7 +119,7 @@ class Stage(nn.Module):
         return rv
 
     @classmethod
-    def build_from_config(cls, max_cin: int, config: StageConfig, building_block: Type[BaseDynamicBlock], width_window_choice: int) -> Stage:
+    def build_from_config(cls, max_cin: int, config: StageConfig, building_block: Callable[..., BaseDynamicBlock], width_window_choice: int) -> Stage:
         return cls(max_cin=max_cin, width_list=config.get_active_width_list(width_window_choice), depth_list=config.depth_list, stride=config.stride, building_block=building_block)
 
 

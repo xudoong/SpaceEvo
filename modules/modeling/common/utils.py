@@ -1,5 +1,3 @@
-from typing import Tuple, Type, Union
-
 from torch import nn
 
 
@@ -25,7 +23,7 @@ def get_same_padding(kernel_size: int) -> int:
     return kernel_size // 2
 
 
-def get_activation(activation: Union[Type[nn.Module], str]) -> Tuple[str, Type[nn.Module]]:
+def get_activation(activation):
     name_module_pairs = [
         ('relu', nn.ReLU), ('relu6', nn.ReLU6), ('hswish', nn.Hardswish), ('hsigmoid', nn.Hardsigmoid), ('swish', nn.SiLU), ('none', None)
     ]

@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import Type, Union
 
 from torch import nn, Tensor
 
@@ -10,7 +9,7 @@ from .base_block import BaseBlock, BaseBlockConfig
 class _ConvBnActBlock(BaseBlock):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, stride: int,
-                activation: Union[Type[nn.Module], str] = 'relu', inplace=True) -> None:
+                activation='relu', inplace=True) -> None:
         super().__init__(cin, cout, kernel_size, None, stride, activation)
 
         self.conv = QConvNormActivation(cin, cout, kernel_size, stride, activation_layer=self.activation_layer, inplace=inplace)
@@ -27,19 +26,19 @@ class _ConvBnActBlock(BaseBlock):
 
 class FirstConvBlock(_ConvBnActBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, stride: int, activation: Union[Type[nn.Module], str] = 'relu', inplace=True) -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, stride: int, activation='relu', inplace=True) -> None:
         super().__init__(cin, cout, kernel_size, stride, activation, inplace)
 
 
 class FinalExpandBlock(_ConvBnActBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, stride: int, activation: Union[Type[nn.Module], str] = 'hswish', inplace=True) -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, stride: int, activation='hswish', inplace=True) -> None:
         super().__init__(cin, cout, kernel_size, stride, activation, inplace)
         
 
 class FeatureMixBlock(_ConvBnActBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, stride: int, activation: Union[Type[nn.Module], str] = 'hswish', inplace=True) -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, stride: int, activation='hswish', inplace=True) -> None:
         super().__init__(cin, cout, kernel_size, stride, activation, inplace)
     
     def forward(self, x: Tensor):

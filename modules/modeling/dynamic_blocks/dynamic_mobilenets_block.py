@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type, Union
+from typing import Dict, List
 
 from torch import Tensor, nn
 import torch
@@ -18,7 +18,7 @@ from modules.modeling.common.utils import make_divisible, get_activation
 class _DynamicQInvertedResidual(BaseDynamicBlock):
 
     def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], expand_list: List[float], stride: int, 
-                    use_se: bool, activation: Union[Type[nn.Module], str]=nn.ReLU, inplace=True, force_residual=False, DWConvNA=DynamicQDWConvNormActivation) -> None:
+                    use_se: bool, activation=nn.ReLU, inplace=True, force_residual=False, DWConvNA=DynamicQDWConvNormActivation) -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, expand_list, activation)
         self.use_se = use_se
         self.inplace = inplace

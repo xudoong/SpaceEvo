@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Callable, Dict, List, Optional, Union
 
 import numpy as np
 
@@ -11,8 +11,8 @@ class SuperSpace:
 
     NAME = 'base'
 
-    def __init__(self, macro_arch: MacroArch, building_block_candidates: List[Type[BaseDynamicBlock]],
-                other_block_dict: Dict[str, Type[BaseDynamicBlock]]) -> None:
+    def __init__(self, macro_arch: MacroArch, building_block_candidates: List[Callable[..., BaseDynamicBlock]],
+                other_block_dict: Dict[str, Callable[..., BaseDynamicBlock]]) -> None:
         self.macro_arch = macro_arch
         self.building_block_candidates = building_block_candidates
         self.other_block_dict = other_block_dict

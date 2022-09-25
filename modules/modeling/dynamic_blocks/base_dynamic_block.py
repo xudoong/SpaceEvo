@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Type, Union
+from typing import List, Optional, Tuple, Union
 from torch import Tensor, nn
 
 import numpy as np
@@ -11,7 +11,7 @@ from modules.modeling.common.utils import get_activation
 class BaseDynamicBlock(nn.Module):
 
     def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, 
-                expand_list: Optional[List[float]]=None, activation: Union[Type[nn.Module], str]='relu') -> None:
+                expand_list: Optional[List[float]]=None, activation='relu') -> None:
         super().__init__()
         self.max_cin = max_cin
         self.width_list = width_list

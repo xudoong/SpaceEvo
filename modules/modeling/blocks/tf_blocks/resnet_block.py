@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type, Union
 from tensorflow.keras import layers
 
 from .base_block import BaseBlock, BaseBlockConfig
@@ -11,7 +10,7 @@ from modules.modeling.ops.lsq_plus import DEFAULT_BITS
 
 class _ResNetBaseBlock(BaseBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation: Union[str, Type[layers.Layer]] = 'relu', use_se=False) -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation='relu', use_se=False) -> None:
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, activation)
         hidden_size = make_divisible(self.cout * expand_ratio)
 
@@ -53,19 +52,19 @@ class _ResNetBaseBlock(BaseBlock):
 
 class ResNetBlock(_ResNetBaseBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation: Union[str, Type[layers.Layer]] = 'relu') -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation='relu') -> None:
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, activation, use_se=False)
 
 
 class ResNetSEBlock(_ResNetBaseBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation: Union[str, Type[layers.Layer]] = 'relu') -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation='relu') -> None:
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, activation, use_se=True)
 
 
 class ResNetBugBlock(_ResNetBaseBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation: Union[str, Type[layers.Layer]] = 'relu') -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation='relu') -> None:
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, activation, use_se=False)
         self.conv1 = None 
         self.conv2 = None 

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Optional, Union, Type
+from typing import Dict, Optional, Union
 from torch import Tensor, nn
 
 from modules.modeling.common.utils import get_activation
@@ -23,7 +23,7 @@ class BaseBlockConfig:
 
 class BaseBlock(nn.Module):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: Optional[float], stride: int, activation: Union[Type[nn.Module], str]='relu') -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: Optional[float], stride: int, activation='relu') -> None:
         super().__init__()
         self.cin = cin
         self.cout = cout 

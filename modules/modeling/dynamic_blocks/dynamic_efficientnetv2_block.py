@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type, Union
+from typing import Dict, List
 
 from torch import Tensor, nn
 import torch
@@ -15,7 +15,7 @@ from modules.modeling.common.utils import make_divisible, get_activation
 
 class _DynamicFusedMBConvBlock(BaseDynamicBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, expand_list: List[float], use_se: bool, activation: Union[Type[nn.Module], str] = nn.ReLU, inplace=True, force_residual=False) -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, expand_list: List[float], use_se: bool, activation=nn.ReLU, inplace=True, force_residual=False) -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, expand_list, activation)
         self.use_se = use_se
         self.force_residual = force_residual
@@ -98,7 +98,7 @@ class _DynamicFusedMBConvBlock(BaseDynamicBlock):
 
 class DynamicFusedMBConvResBlock(_DynamicFusedMBConvBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, expand_list: List[float], activation: Union[Type[nn.Module], str] = nn.ReLU, inplace=True) -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, expand_list: List[float], activation=nn.ReLU, inplace=True) -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, expand_list, use_se=False, activation=activation, inplace=inplace, force_residual=True)
 
     def get_active_block(self, cin: int, retain_weights=True) -> FusedMBConvResBlock:
@@ -118,7 +118,7 @@ class DynamicFusedMBConvResBlock(_DynamicFusedMBConvBlock):
 
 class DynamicFusedMBConvSEResBlock(_DynamicFusedMBConvBlock):
 
-    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, expand_list: List[float], activation: Union[Type[nn.Module], str] = nn.ReLU, inplace=True) -> None:
+    def __init__(self, max_cin: int, width_list: List[int], kernel_list: List[int], stride: int, expand_list: List[float], activation=nn.ReLU, inplace=True) -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, expand_list, use_se=True, activation=activation, inplace=inplace, force_residual=True)
 
     def get_active_block(self, cin: int, retain_weights=True) -> FusedMBConvSEResBlock:

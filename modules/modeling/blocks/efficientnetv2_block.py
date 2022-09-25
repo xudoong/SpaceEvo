@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type, Union
 from torch import Tensor, nn
 import torch
 
@@ -12,7 +11,7 @@ from modules.modeling.common.utils import make_divisible, get_activation
 class _FusedMBConvBlock(BaseBlock):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, 
-                    use_se: bool=False, activation_layer: Union[Type(nn.Module), str]=nn.ReLU, 
+                    use_se: bool=False, activation_layer=nn.ReLU,
                     norm_layer=nn.BatchNorm2d, inplace=True, force_residual=False):
         self.use_res_connect = stride == 1 and cin == cout
         self.use_se = use_se
@@ -55,7 +54,7 @@ class _FusedMBConvBlock(BaseBlock):
 
 class FusedMBConvResBlock(_FusedMBConvBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation_layer: Union[Type(nn.Module), str] = nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, use_se=False, activation_layer=activation_layer, norm_layer=norm_layer, inplace=inplace, force_residual=True)
 
     @classmethod
@@ -65,7 +64,7 @@ class FusedMBConvResBlock(_FusedMBConvBlock):
 
 class FusedMBConvSEResBlock(_FusedMBConvBlock):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation_layer: Union[Type(nn.Module), str] = nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, use_se=True, activation_layer=activation_layer, norm_layer=norm_layer, inplace=inplace, force_residual=True)
 
     @classmethod

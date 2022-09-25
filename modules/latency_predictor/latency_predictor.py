@@ -2,13 +2,7 @@ import math
 
 from nn_meter.predictor.quantize_block_predictor import BlockLatencyPredictor
 from modules.modeling.network import QNetworkConfig
-from modules.modeling.blocks import (
-    BaseBlockConfig,
-    MobileNetV1Block, MobileNetV1DualBlock,
-    MobileNetV2Block, MobileNetV2ResBlock,
-    MobileNetV3Block, MobileNetV3ResBlock,
-    ResNetBlock, ResNetSEBlock
-)
+from modules.modeling.blocks import BaseBlockConfig
 
 
 available_platform = [

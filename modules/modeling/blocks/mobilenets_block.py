@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type, Union
 from torch import Tensor, nn
 
 from .base_block import BaseBlock, BaseBlockConfig
@@ -11,7 +10,7 @@ from modules.modeling.common.utils import make_divisible, get_activation
 class _QInvertedResidual(BaseBlock):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, 
-                    use_se: bool=False, activation_layer: Union[Type(nn.Module), str]=nn.ReLU, 
+                    use_se: bool=False, activation_layer=nn.ReLU,
                     norm_layer=nn.BatchNorm2d, inplace=True, force_residual=False, DWConvNA=QDWConvNormActivation):
         self.use_res_connect = stride == 1 and cin == cout
         self.use_se = use_se
@@ -109,7 +108,7 @@ class MobileNetV1DualBlock(BaseBlock):
 class MobileNetV2Block(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(nn.Module), str]=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+                    activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, False, activation_layer, norm_layer, inplace)
 
     @classmethod
@@ -121,7 +120,7 @@ class MobileNetV2Block(_QInvertedResidual):
 class MobileNetV3Block(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(nn.Module), str]=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+                    activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, True, activation_layer, norm_layer, inplace)
 
     @classmethod
@@ -133,7 +132,7 @@ class MobileNetV3Block(_QInvertedResidual):
 class MobileNetV2ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(nn.Module), str]=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+                    activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, False, activation_layer, norm_layer, inplace, force_residual=True)
 
     @classmethod
@@ -145,7 +144,7 @@ class MobileNetV2ResBlock(_QInvertedResidual):
 class MobileNetV3ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(nn.Module), str]=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+                    activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, True, activation_layer, norm_layer, inplace, force_residual=True)
 
     @classmethod
@@ -157,7 +156,7 @@ class MobileNetV3ResBlock(_QInvertedResidual):
 class MobileNetV2K3ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(nn.Module), str]=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+                    activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, False, activation_layer, norm_layer, inplace, force_residual=True, DWConvNA=QDWConvK3NormActivation)
 
     @classmethod
@@ -169,7 +168,7 @@ class MobileNetV2K3ResBlock(_QInvertedResidual):
 class MobileNetV3K3ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(nn.Module), str]=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
+                    activation_layer=nn.ReLU, norm_layer=nn.BatchNorm2d, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, True, activation_layer, norm_layer, inplace, force_residual=True, DWConvNA=QDWConvK3NormActivation)
 
     @classmethod

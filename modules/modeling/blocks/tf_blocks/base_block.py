@@ -1,12 +1,12 @@
 from __future__ import annotations
-from typing import Dict, Optional, Union, Type, Tuple
+from typing import Dict, Optional, Union, Tuple
 import tensorflow as tf
 from tensorflow.keras import layers
 from ....modeling.ops.tf_ops.base_ops import HSigmoid, Relu6, HSwish, Swish
 from ..base_block import BaseBlockConfig
 
 
-def get_activation(activation: Union[Type[layers.Layer], str]) -> Tuple[str, Type[layers.Layer]]:
+def get_activation(activation):
     name_module_pairs = [
         ('relu', layers.ReLU), ('relu6', Relu6), ('hswish', HSwish), ('hsigmoid', HSigmoid), ('swish', Swish), ('none', None)
     ]
@@ -24,7 +24,7 @@ def get_activation(activation: Union[Type[layers.Layer], str]) -> Tuple[str, Typ
 
 class BaseBlock(tf.keras.Model):
 
-    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: Optional[float], stride: int, activation: Union[Type[layers.Layer], str]='relu') -> None:
+    def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: Optional[float], stride: int, activation='relu') -> None:
         super().__init__()
         self.cin = cin
         self.cout = cout 

@@ -21,11 +21,13 @@ You can evaluate these supernets max-subnet's and min-subnet's accuracy and subn
 # evaluate supernet's int8 accuracy
 python eval_specific_net.py --model_name spaceevo@vnni --dataset_dir ${IMAGENET_PATH} --quant_mode
 # evaluate supernet's fp32 accuracy
-python eval_specific_net.py --model_name spaceevo@vnni --dataset_dir ${IMAGENET_PATH} --quant_mode
+python eval_specific_net.py --model_name spaceevo@vnni --dataset_dir ${IMAGENET_PATH}
 
 # evaluate subnet's int8 accuracy
 python eval_specific_net.py --model_name SeqNet@pixel4-A0 --dataset_dir ${IMAGENET_PATH} --quant_mode
 python eval_specific_net.py --model_name SeqNet@vnni-A0 --dataset_dir ${IMAGENET_PATH} --quant_mode
+# evaluate subnet's fp32 accuracy
+python eval_specific_net.py --model_name SeqNet@pixel4-A0 --dataset_dir ${IMAGENET_PATH}
 ```
 
 ## Usage
@@ -75,11 +77,19 @@ ${CHECKPOINT_DIR}
 ### Setup nn-Meter
 We use nn-Meter to predict model's latency. To setup nn-Meter, do the following procedure:
 
-First download *nn-meter-predictor.zip* from https://drive.google.com/drive/folders/1Bj-EdyAIKWtzKn86pNkLtOE8_HikDONL.
+First download and unzip *nn-meter-predictor.zip* from https://drive.google.com/drive/folders/1Bj-EdyAIKWtzKn86pNkLtOE8_HikDONL.
 You will get a folder named *tflite-int8-predictor*. Assume the folder's path is `${tflite_predictor_path}`.
 
 Set the `package_location` entry in *meta.yaml* to `${tflite_predictor_path}`.
-
+```yaml
+name: tflite27_cpu_int8
+version: 1.0
+category: cpu
+package_location: <Change this to this meta.yaml file's directory path>
+kernel_predictors:
+    - conv-bn-relu
+    ...
+```
 Then install nn-meter and register tflite-int8-predictor.
 ```shell
 git clone https://github.com/microsoft/nn-Meter.git
@@ -94,7 +104,8 @@ nn-meter register --predictor ${tflite_predictor_path}/meta.yaml
 ### search space search
 
 #### train block kd
-We use LSQ+ quantized efficientnet-b5 to distill blocks. The checkpoint is also in the above google-drive link.
+We use LSQ+ quantized efficientnet-b5 to distill blocks. The checkpoint is also in the above 
+[google-drive link](https://drive.google.com/drive/folders/1Bj-EdyAIKWtzKn86pNkLtOE8_HikDONL).
 Download it to `checkpoints/block_kd/teacher_checkpoint/efficientnet_b5/checkpoint.pth`
 
 First you need to train and LSQ+ QAT all the blocks in stage1-stage6 in the hyperspace (superspace). 
@@ -151,11 +162,11 @@ We found after a few batches, the loss becomes stable, so we set `--debug` flag 
 
 Each line in the output lut csv file represents a stage sampled from the dynamic stage. There are 6 items in a line, whose meanings are
 
-| sub-stage-config | input shape  | nsr-loss | FLOPS(M) | Params(M) | pred int8 latency(ms) |
-|------------------|--------------|----------|----------|-----------|-----------------------|
-| 5#32#8_3#40#3    | 1x24x112x112 | 0.2734   | 118.7395 | 0.0489    | 11.7578               |
+| sub-stage-config | input shape  | nsr-loss | FLOPS(M) | Params(M) | pred int8 latency (ms) |
+|------------------|--------------|----------|----------|-----------|------------------------|
+| 5#32#8_3#40#3    | 1x24x112x112 | 0.2734   | 118.7395 | 0.0489    | 11.7578                |
 
-If a sub-stage has 2 blocks (depth=2) and each block bi has (kernel_size, width, expand_ratio) = (ki, wi, ei), then it can be encoded as *k1#w1#e1_k2#w2_e2*. 
+If a substage has 2 blocks (depth=2) and each block bi has (kernel_size, width, expand_ratio) = (ki, wi, ei), then it can be encoded as *k1#w1#e1_k2#w2_e2*. 
 
 The built LUT stores in `data/block_lut`.
 

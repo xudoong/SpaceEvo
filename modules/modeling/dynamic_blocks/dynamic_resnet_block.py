@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type, Union
+from typing import Dict, List
 
 import torch
 from torch import Tensor, nn
@@ -13,7 +13,7 @@ class _DynamicResNetBaseBlock(BaseDynamicBlock):
 
     def __init__(self, max_cin: int, width_list: List[int], stride: int, kernel_list: List[int],
                  expand_list: List[float],
-                 activation: Union[Type[nn.Module], str] = nn.ReLU, inplace: bool = True, use_se=False) -> None:
+                 activation=nn.ReLU, inplace: bool = True, use_se=False) -> None:
         super().__init__(max_cin, width_list, kernel_list, stride, expand_list, activation)
 
         self.conv1 = DynamicQConvNormActivation(
@@ -105,7 +105,7 @@ class _DynamicResNetBaseBlock(BaseDynamicBlock):
 class DynamicResNetBlock(_DynamicResNetBaseBlock):
 
     def __init__(self, max_cin: int, width_list: List[int], stride: int, kernel_list: List[int],
-                 expand_list: List[float], activation: Union[Type[nn.Module], str] = nn.ReLU,
+                 expand_list: List[float], activation=nn.ReLU,
                  inplace: bool = True) -> None:
         super().__init__(max_cin, width_list, stride, kernel_list, expand_list, activation, inplace, use_se=False)
 
@@ -127,7 +127,7 @@ class DynamicResNetBlock(_DynamicResNetBaseBlock):
 class DynamicResNetSEBlock(_DynamicResNetBaseBlock):
 
     def __init__(self, max_cin: int, width_list: List[int], stride: int, kernel_list: List[int],
-                 expand_list: List[float], activation: Union[Type[nn.Module], str] = nn.ReLU,
+                 expand_list: List[float], activation=nn.ReLU,
                  inplace: bool = True) -> None:
         super().__init__(max_cin, width_list, stride, kernel_list, expand_list, activation, inplace, use_se=True)
 
@@ -151,7 +151,7 @@ class DynamicResNetSEBlock(_DynamicResNetBaseBlock):
 class DynamicResNetBugBlock(_DynamicResNetBaseBlock):
 
     def __init__(self, max_cin: int, width_list: List[int], stride: int, kernel_list: List[int],
-                 expand_list: List[float], activation: Union[Type[nn.Module], str] = nn.ReLU,
+                 expand_list: List[float], activation=nn.ReLU,
                  inplace: bool = True) -> None:
         super().__init__(max_cin, width_list, stride, kernel_list, expand_list, activation, inplace, use_se=False)
 

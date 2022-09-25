@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type, Union
 from tensorflow.keras import layers
 
 from .base_block import BaseBlock, BaseBlockConfig, get_activation
@@ -10,7 +9,7 @@ from modules.modeling.common.utils import make_divisible
 
 class _QInvertedResidual(BaseBlock):
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int, 
-                    use_se: bool=False, activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, 
+                    use_se: bool=False, activation_layer=layers.ReLU,
                     norm_layer=layers.BatchNormalization, inplace=True, force_residual=False, DWConvNA=QDWConvNormActivation):
     
         self.use_res_connect = stride == 1 and cin == cout
@@ -108,7 +107,7 @@ class MobileNetV1DualBlock(BaseBlock):
 class MobileNetV2Block(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
+                    activation_layer=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, False, activation_layer, norm_layer, inplace)
 
     @classmethod
@@ -120,7 +119,7 @@ class MobileNetV2Block(_QInvertedResidual):
 class MobileNetV3Block(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
+                    activation_layer=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, True, activation_layer, norm_layer, inplace)
 
     @classmethod
@@ -132,7 +131,7 @@ class MobileNetV3Block(_QInvertedResidual):
 class MobileNetV2ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
+                    activation_layer=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, False, activation_layer, norm_layer, inplace, force_residual=True)
 
     @classmethod
@@ -144,7 +143,7 @@ class MobileNetV2ResBlock(_QInvertedResidual):
 class MobileNetV3ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
+                    activation_layer=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, True, activation_layer, norm_layer, inplace, force_residual=True)
 
     @classmethod
@@ -156,7 +155,7 @@ class MobileNetV3ResBlock(_QInvertedResidual):
 class MobileNetV2K3ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
+                    activation_layer=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, False, activation_layer, norm_layer, inplace, force_residual=True, DWConvNA=QDWConvK3NormActivation)
 
     @classmethod
@@ -168,7 +167,7 @@ class MobileNetV2K3ResBlock(_QInvertedResidual):
 class MobileNetV3K3ResBlock(_QInvertedResidual):
 
     def __init__(self, cin: int, cout: int, kernel_size: int, expand_ratio: float, stride: int,
-                    activation_layer: Union[Type(layers.Layer), str]=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
+                    activation_layer=layers.ReLU, norm_layer=layers.BatchNormalization, inplace=True):
         super().__init__(cin, cout, kernel_size, expand_ratio, stride, True, activation_layer, norm_layer, inplace, force_residual=True, DWConvNA=QDWConvK3NormActivation)
 
     @classmethod
