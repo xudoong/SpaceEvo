@@ -270,3 +270,8 @@ A quantized op can be implemented by inheriting `QBase` and `nn.Module`, see *mo
 
 Because the normal training flow is first training in fp32 mode and then qat in int8 mode, models are initialized into fp32 mode, by setting the `nbits_w` and `nbits_a` attributes in `QBase` to 32. 
 In forward pass, lsq+ ops in fp32 mode behave the same as normal torch modules. To change a model to int8 mode, all `nbits_w` and `nbits_a` attributes are needed to change to 8, which can be done by function `set_quant_mode`.
+
+## DownStream Classification
+```
+python downstream_cls.py --subnet_name SeqNet@vnni-A0  --dataset CIFAR10 --imagenet_path xxx
+```
