@@ -3,3 +3,4 @@ checkpoints/
 examples/
 **/__pycache__/
 **/.DS_Store
+detection/**
