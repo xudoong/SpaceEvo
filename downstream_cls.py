@@ -187,7 +187,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("SpaceEvo Downstream Classification Finetune")
-    parser.add_argument('--subnet_name', type=str, default='SeqNet@vnni-A0')
+    parser.add_argument('--subnet_name', type=str, default='SEQnet@vnni-A0')
     parser.add_argument('--imagenet_path', required=True, help='used to calibrate batchnorm when generating subnet')
     parser.add_argument("--dataset", type=str, default="CIFAR10", choices=TASK_LIST)
     parser.add_argument("--seed", type=int, default=42)

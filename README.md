@@ -16,7 +16,7 @@ Download them to `./checkpoints/supernet_training`.
 The configs of the specific supernets and subnets after search are in `./data/search_results.yaml`, which contains:
 * five supernets: spaceevo@pixel4, spaceevo@pixel4-medium, spaceevo@pixel4-tiny,
 spaceevo@vnni and spaceevo@vnni-large.
-* ten subnets: SeqNet@pixel4-A[0-4], SeqNet@vnni-A[0-4].
+* ten subnets: SEQnet@pixel4-A[0-4], SEQnet@vnni-A[0-4].
 
 You can evaluate these supernets max-subnet's and min-subnet's accuracy and subnet's accuracy by running `eval_specific_net.py`.
 ```shell
@@ -26,10 +26,10 @@ python eval_specific_net.py --model_name spaceevo@vnni --dataset_dir ${IMAGENET_
 python eval_specific_net.py --model_name spaceevo@vnni --dataset_dir ${IMAGENET_PATH}
 
 # evaluate subnet's int8 accuracy
-python eval_specific_net.py --model_name SeqNet@pixel4-A0 --dataset_dir ${IMAGENET_PATH} --quant_mode
-python eval_specific_net.py --model_name SeqNet@vnni-A0 --dataset_dir ${IMAGENET_PATH} --quant_mode
+python eval_specific_net.py --model_name SEQnet@pixel4-A0 --dataset_dir ${IMAGENET_PATH} --quant_mode
+python eval_specific_net.py --model_name SEQnet@vnni-A0 --dataset_dir ${IMAGENET_PATH} --quant_mode
 # evaluate subnet's fp32 accuracy
-python eval_specific_net.py --model_name SeqNet@pixel4-A0 --dataset_dir ${IMAGENET_PATH}
+python eval_specific_net.py --model_name SEQnet@pixel4-A0 --dataset_dir ${IMAGENET_PATH}
 ```
 
 ## Usage
@@ -44,7 +44,7 @@ The whole pipeline contains the following procedures:
    1. eval accuracy and predict latency, see *eval_supernet.py*
    2. benchmark latency on real device: see *onnx_tools/* and *tflite_tools/*
 
-Assume all the checkpoints and results are stored in ${CHECKPOINT_DIR}. 
+Assume all the checkpoints and results are stored in ${CHECKPOINT_DIR} (default is `./checkpoints`). 
 The directory layout is:
 ```
 ${CHECKPOINT_DIR}
@@ -273,5 +273,5 @@ In forward pass, lsq+ ops in fp32 mode behave the same as normal torch modules. 
 
 ## DownStream Classification
 ```
-python downstream_cls.py --subnet_name SeqNet@vnni-A0  --dataset CIFAR10 --imagenet_path xxx
+python downstream_cls.py --subnet_name SEQnet@vnni-A0  --dataset CIFAR10 --imagenet_path xxx
 ```

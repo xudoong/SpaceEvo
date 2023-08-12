@@ -80,7 +80,7 @@ def freeze_weight(subnet):
 
 if __name__ == '__main__':
     device = torch.device('mps')
-    subnet = get_spaceevo_int8_pretrained_subnet('SeqNet@vnni-A0', '/Users/xudongwang/Downloads/imagenet/', device=device)
+    subnet = get_spaceevo_int8_pretrained_subnet('SEQnet@vnni-A0', '/Users/xudongwang/Downloads/imagenet/', device=device)
     freeze_weight(subnet)
     replace_classifier(subnet, 100)
 

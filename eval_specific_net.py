@@ -35,7 +35,7 @@ specific_subnet_encoding_dict = y['specific_subnet_encoding_dict']
 parser = argparse.ArgumentParser(description='Evaluate supernet and subnet.')
 parser.add_argument('--model_name', required=True, type=str,
                     help='specific network name to evaluate, '
-                         'e.g. "spaceevo@pixel4" (supernet) or "SeqNet@vnni-A0" (subnet)')
+                         'e.g. "spaceevo@pixel4" (supernet) or "SEQnet@vnni-A0" (subnet)')
 parser.add_argument('--quant_mode', action='store_true', help='evaluate quantized net')
 parser.add_argument('--local_rank', default=-1, type=int)
 parser.add_argument('--batch_size_per_gpu', type=int, default=32)
